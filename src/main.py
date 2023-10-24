@@ -35,13 +35,12 @@ intents.message_content = True
 client = discord.Client(intents = intents)
 
 # // Other vars
-messageHistory = {}
+userConvos = {}
 
 # // ---- Main
 # // Train Chatbot
-conversations.training.train(listTrainer) # detailed
-corpusTrainer.train("chatterbot.corpus.conversations")
-corpusTrainer.train("chatterbot.corpus.greetings")
+# conversations.training.train(listTrainer) # detailed
+corpusTrainer.train("chatterbot.corpus.english")
 
 # // When the bot starts
 @client.event
@@ -52,7 +51,7 @@ async def on_ready():
 # // When a message is sent
 @client.event
 async def on_message(message: discord.Message):
-    global messageHistory
+    global userConvos
     
     # Ignore messages sent by bots
     if message.author.bot:
@@ -77,28 +76,33 @@ async def on_message(message: discord.Message):
         mention_author = True
     )
     
-    # Save message
-    conversationFromUser = messageHistory.get(message.author.id, [])
+    # Save user message
+    conversationFromUser: list = userConvos.get(message.author.id, [])
     conversationFromUser.append(message.content)
     
     if len(conversationFromUser) > config.messageHistoryLimit:
         conversationFromUser.pop(0)
-        
-    messageHistory[message.author.id] = conversationFromUser # save
     
-    # Reply with a chatbot response
+    # Retrieve chatbot response
     userConvoConcatenated = "\n".join(conversationFromUser)
     response = chatbot.get_response(userConvoConcatenated)
+    
+    conversationFromUser.append(response)
+    userConvos[message.author.id] = conversationFromUser # save
 
+    # Reply with the response
     helpers.prettyprint.info(f"🧑 | Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
     helpers.prettyprint.success(f"🤖| Reply: {response}")
 
-    return await message.edit(
+    await message.edit(
         embed = discord.Embed(
             description = f"> :robot: | **{response}**",
             color = discord.Colour.from_rgb(125, 255, 125)
         )
     )
+    
+    # Finally, learn from this interaction
+    listTrainer.train(conversationFromUser)
     
 # // Start the bot
 client.run(config.botToken, log_handler = None)
