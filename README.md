@@ -25,7 +25,7 @@ pip install pyyaml==5.1
 ### **How To Use**
 1) `git clone` this repo.
 ```
-git clone https://github.com/Cuh4/DiscordChatbot.git
+git clone https://github.com/Cuh4/DiscordChatbot
 ```
 
 2) Create a Discord bot at https://discord.com/developers/applications.
