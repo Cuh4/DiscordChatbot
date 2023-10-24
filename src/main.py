@@ -20,8 +20,8 @@ chatbot = chatterbot.ChatBot("Bob")
 
 # // Chatbot Training
 # Trainers
-listTrainer = trainers.ListTrainer(chatbot, show_training_progress = False)
-corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot, show_training_progress = False)
+listTrainer = trainers.ListTrainer(chatbot, show_training_progress = True)
+corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot, show_training_progress = True)
 
 # // Discord Bot
 intents = discord.Intents.default()
@@ -32,7 +32,7 @@ client = discord.Client(intents = intents)
 # // ---- Functions
 def trainFromPreset(preset: list[list[str]]):
     for convo in preset:
-        listTrainer.train(convo)
+        listTrainer.train(helpers.filter.filter(convo))
 
 # // ---- Main
 # // Train Chatbot
