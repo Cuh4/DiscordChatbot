@@ -34,9 +34,6 @@ intents.message_content = True
 
 client = discord.Client(intents = intents)
 
-# // Other vars
-userConvos = {}
-
 # // ---- Main
 # // Train Chatbot
 # conversations.training.train(listTrainer) # detailed
@@ -57,6 +54,10 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
     
+    # ignore self
+    if message.author is client.user:
+        return
+    
     # Ignore message if not mentioned
     if not discordHelpers.utils.isMentioned(message.mentions, client.user):
         return
@@ -75,21 +76,10 @@ async def on_message(message: discord.Message):
         reference = message,
         mention_author = True
     )
-    
-    # Save user message
-    conversationFromUser: list = userConvos.get(message.author.id, [])
-    conversationFromUser.append(message.content)
-    
-    if len(conversationFromUser) > config.messageHistoryLimit:
-        conversationFromUser.pop(0)
-    
-    # Retrieve chatbot response
-    userConvoConcatenated = "\n".join(conversationFromUser)
-    response = chatbot.get_response(userConvoConcatenated)
-    
-    conversationFromUser.append(response)
-    userConvos[message.author.id] = conversationFromUser # save
 
+    # Retrieve chatbot response
+    response = chatbot.get_response(message.content)
+    
     # Reply with the response
     helpers.prettyprint.info(f"🧑 | Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
     helpers.prettyprint.success(f"🤖| Reply: {response}")
