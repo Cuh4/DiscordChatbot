@@ -92,7 +92,7 @@ async def on_message(message: discord.Message):
     )
     
     # Finally, learn from this interaction
-    # listTrainer.train(conversationFromUser)
+    # listTrainer.train([message.content, response])
     
 # // Start the bot
 client.run(config.botToken, log_handler = None)
