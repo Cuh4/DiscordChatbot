@@ -8,6 +8,7 @@ from chatterbot import trainers
 import discord
 import os
 import json
+import sqlite3
 
 import config
 from helpers import discord as discordHelpers
@@ -40,8 +41,10 @@ if not os.path.exists("saved.json"): # chatbot hasn't been trained before, so we
     # notify
     helpers.prettyprint.warn("This chatbot hasn't been trained. As a result, the chatbot will be trained. This may take a while.")
     
-    # destroy previously saved data
-    os.remove("db.sqlite3")
+    # destroy previously saved data since training didn't complete correctly as implied by the lack of saved.json
+    connection = sqlite3.connect("db.sqlite3")
+    connection.cursor().execute("DELETE FROM statement").execute("DELETE FROM tag_association")
+    connection.close()
     
     # train
     corpusTrainer.train("chatterbot.corpus.english")
