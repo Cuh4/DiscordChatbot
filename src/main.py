@@ -14,30 +14,34 @@ import conversations
 import conversationPresets
 
 # // ---- Variables
-# // Create chatbot
+# // Chatbot
 chatbot = chatterbot.ChatBot("Bob")
 
 # // Chatbot Training
-# Train Data
+# Training Data
 conversations.training.saveConversation(
     conversation = conversationPresets.online2.data,
     reverse = False
 )
 
-# Train the bot
+# Trainers
 listTrainer = trainers.ListTrainer(chatbot)
-# conversations.training.train(listTrainer)
-
 corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot)
-corpusTrainer.train("chatterbot.corpus.english")
 
-# // Create Discord Bot
+# // Discord Bot
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents = intents)
 
+# // Other vars
+messageHistory = {}
+
 # // ---- Main
+# // Train Chatbot
+conversations.training.train(listTrainer) # detailed
+corpusTrainer.train("chatterbot.corpus.english")
+
 # // When the bot starts
 @client.event
 async def on_ready():
@@ -47,6 +51,8 @@ async def on_ready():
 # // When a message is sent
 @client.event
 async def on_message(message: discord.Message):
+    global messageHistory
+    
     # Ignore messages sent by bots
     if message.author.bot:
         return
@@ -59,8 +65,18 @@ async def on_message(message: discord.Message):
     if discordHelpers.cooldown.cooldown(message.author, config.chatCooldown, "chat"):
         return await message.add_reaction("🕰")
     
+    # Save message
+    conversationFromUser = messageHistory.get(message.author.id, [])
+    conversationFromUser.append(message.content)
+    
+    if len(conversationFromUser) > config.messageHistoryLimit:
+        conversationFromUser.pop(0)
+        
+    messageHistory[message.author.id] = conversationFromUser # save
+    
     # Reply with a chatbot response
-    response = chatbot.get_response(message.content)
+    userConvoConcatenated = "\n".join(conversationFromUser)
+    response = chatbot.get_response(userConvoConcatenated)
 
     helpers.prettyprint.info(f"🧑 | Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
     helpers.prettyprint.success(f"🤖| Reply: {response}")
