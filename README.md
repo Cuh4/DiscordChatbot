@@ -28,17 +28,19 @@ pip install pyyaml==5.1
 git clone https://github.com/Cuh4/DiscordChatbot.git
 ```
 
-2) In the `src` folder, edit `example_config.py` then rename to `config.py` when completed.
+2) Create a Discord bot at https://discord.com/developers/applications.
 
-3) To start the bot, run the following commands:
+3) In the `src` folder, edit `example_config.py` then rename to `config.py` when completed. Be sure to plop your bot's token in the config file.
+
+4) Start the bot using the following commands:
 ```
 cd src
 py main.py
 ```
 
-4) Invite the bot to a server.
+5) Invite your bot to a server.
 
-5) Talk to the bot by mentioning it and saying whatever.
+6) Talk to the bot by mentioning it and saying whatever.
 
 ### **Images**
 ![Conversations](imgs/conversation.png)
