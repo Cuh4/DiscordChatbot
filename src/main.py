@@ -35,8 +35,8 @@ def trainFromPreset(preset: list[list[str]]):
 # // ---- Main
 # // Train Chatbot
 corpusTrainer.train("chatterbot.corpus.english")
-trainFromPreset(conversationPresets.online1)
-trainFromPreset(conversationPresets.online2)
+trainFromPreset(conversationPresets.online1.data)
+trainFromPreset(conversationPresets.online2.data)
 
 # // When the bot starts
 @client.event
