@@ -1,0 +1,14 @@
+/.vscode
+
+/src/__pycache__
+/src/helpers/discord/__pycache__
+/src/helpers/general/__pycache__
+/src/helpers/__pycache__
+/src/conversationPresets/__pycache__
+/src/conversations/__pycache__
+
+/src/config.py
+
+/src/db.sqlite3
+/src/db.sqlite3-shm
+/src/db.sqlite3-wal
