@@ -36,7 +36,7 @@ def trainFromPreset(preset: list[list[str]]):
 # // Train Chatbot
 corpusTrainer.train("chatterbot.corpus.english")
 trainFromPreset(conversationPresets.online1.data)
-trainFromPreset(conversationPresets.online2.data)
+# trainFromPreset(conversationPresets.online2.data)
 
 # // When the bot starts
 @client.event
@@ -68,7 +68,7 @@ async def on_message(message: discord.Message):
     # Send loading message
     message = await message.channel.send(
         embed = discord.Embed(
-            description = f"> **Please wait..**",
+            description = f":clock:",
             color = discord.Colour.from_rgb(255, 125, 25)
         ),
         
@@ -89,9 +89,6 @@ async def on_message(message: discord.Message):
             color = discord.Colour.from_rgb(125, 255, 125)
         )
     )
-    
-    # Finally, learn from this interaction
-    # listTrainer.train([message.content, response])
     
 # // Start the bot
 client.run(config.botToken, log_handler = None)
