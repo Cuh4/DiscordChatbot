@@ -18,7 +18,7 @@ def __handler(fullKey: str, duration: float|int):
     cooldowns.pop(fullKey)
 
 def __key(user: discord.User, key: str):
-    return user.id + key
+    return str(user.id) + key
 
 def __hasCooldown(fullKey: str):
     return cooldowns.get(fullKey, None) != None
