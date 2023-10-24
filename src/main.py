@@ -19,6 +19,7 @@ chatbot = chatterbot.ChatBot("Bob")
 # // Chatbot Training
 # Trainers
 listTrainer = trainers.ListTrainer(chatbot)
+corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot)
 
 # // Discord Bot
 intents = discord.Intents.default()
@@ -33,8 +34,10 @@ def trainFromPreset(preset: list[list[str]]):
 
 # // ---- Main
 # // Train Chatbot
+corpusTrainer.train("chatterbot.corpus.english")
+
 trainFromPreset(conversationPresets.online1.data)
-# trainFromPreset(conversationPresets.online2.data)
+trainFromPreset(conversationPresets.online2.data)
 
 # // When the bot starts
 @client.event
@@ -45,14 +48,12 @@ async def on_ready():
 # // When a message is sent
 @client.event
 async def on_message(message: discord.Message):
-    global userConvos
-    
     # Ignore messages sent by bots
     if message.author.bot:
         return
     
     # ignore self
-    if message.author is client.user:
+    if message.author == client.user:
         return
     
     # Ignore message if not mentioned
@@ -64,7 +65,7 @@ async def on_message(message: discord.Message):
         return await message.add_reaction("🕰")
     
     # Send loading message
-    message = await message.channel.send(
+    sentMessage = await message.channel.send(
         embed = discord.Embed(
             description = f":clock:",
             color = discord.Colour.from_rgb(255, 125, 25)
@@ -81,7 +82,7 @@ async def on_message(message: discord.Message):
     helpers.prettyprint.info(f"🧑 | Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
     helpers.prettyprint.success(f"🤖| Reply: {response}")
 
-    await message.edit(
+    await sentMessage.edit(
         embed = discord.Embed(
             description = f"> :robot: | **{response}**",
             color = discord.Colour.from_rgb(125, 255, 125)
