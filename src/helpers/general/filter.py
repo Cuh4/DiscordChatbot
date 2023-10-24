@@ -8,11 +8,7 @@ def filter(data: list):
     new = []
     
     # general character filtering
-    for _, text in enumerate(data):
-        # remove if this value contains a backslash
-        if text.find("\\") != -1:
-            continue
-        
+    for _, text in enumerate(data):        
         # remove some common unicode (?, forgot the term) characters
         text = text.encode("ascii", "ignore")
         text = text.decode()
