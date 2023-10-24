@@ -6,6 +6,8 @@
 import chatterbot
 from chatterbot import trainers
 import discord
+import os
+import json
 
 import config
 from helpers import discord as discordHelpers
@@ -18,8 +20,8 @@ chatbot = chatterbot.ChatBot("Bob")
 
 # // Chatbot Training
 # Trainers
-listTrainer = trainers.ListTrainer(chatbot)
-corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot)
+listTrainer = trainers.ListTrainer(chatbot, show_training_progress = False)
+corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot, show_training_progress = False)
 
 # // Discord Bot
 intents = discord.Intents.default()
@@ -34,10 +36,22 @@ def trainFromPreset(preset: list[list[str]]):
 
 # // ---- Main
 # // Train Chatbot
-corpusTrainer.train("chatterbot.corpus.english")
+if not os.path.exists("saved.json"): # chatbot hasn't been trained before, so we train it here
+    # notify
+    helpers.prettyprint.warn("This chatbot hasn't been trained. As a result, the chatbot will be trained. This may take a while.")
+    
+    # train
+    corpusTrainer.train("chatterbot.corpus.english")
 
-trainFromPreset(conversationPresets.online1.data)
-trainFromPreset(conversationPresets.online2.data)
+    trainFromPreset(conversationPresets.online1.data)
+    trainFromPreset(conversationPresets.online2.data)
+    
+    # save
+    with open("saved.json", "w") as f:
+        f.write(json.dumps(
+            obj = {"saved" : True},
+            indent = 6
+        ))
 
 # // When the bot starts
 @client.event
