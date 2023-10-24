@@ -57,7 +57,7 @@ async def on_message(message: discord.Message):
     
     # Ignore message if user is on cooldown
     if discordHelpers.cooldown.cooldown(message.author, config.chatCooldown, "chat"):
-        return await message.add_reaction(":clock:")
+        return await message.add_reaction("🕰")
     
     # Reply with a chatbot response
     response = chatbot.get_response(message.content)
@@ -67,7 +67,7 @@ async def on_message(message: discord.Message):
 
     return await message.channel.send(
         embed = discord.Embed(
-            description = f"> :robot: | {response}",
+            description = f"> :robot: | **{response}**",
             color = discord.Colour.from_rgb(125, 255, 125)
         ),
         
