@@ -19,7 +19,6 @@ chatbot = chatterbot.ChatBot("Bob")
 # // Chatbot Training
 # Trainers
 listTrainer = trainers.ListTrainer(chatbot)
-corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot)
 
 # // Discord Bot
 intents = discord.Intents.default()
@@ -34,7 +33,6 @@ def trainFromPreset(preset: list[list[str]]):
 
 # // ---- Main
 # // Train Chatbot
-corpusTrainer.train("chatterbot.corpus.english")
 trainFromPreset(conversationPresets.online1.data)
 # trainFromPreset(conversationPresets.online2.data)
 
