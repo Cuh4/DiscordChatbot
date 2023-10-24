@@ -10,7 +10,6 @@ import discord
 import config
 from helpers import discord as discordHelpers
 from helpers import general as helpers
-import conversations
 import conversationPresets
 
 # // ---- Variables
@@ -18,12 +17,6 @@ import conversationPresets
 chatbot = chatterbot.ChatBot("Bob")
 
 # // Chatbot Training
-# Training Data
-conversations.training.saveConversation(
-    conversation = conversationPresets.online2.data,
-    reverse = False
-)
-
 # Trainers
 listTrainer = trainers.ListTrainer(chatbot)
 corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot)
@@ -34,10 +27,16 @@ intents.message_content = True
 
 client = discord.Client(intents = intents)
 
+# // ---- Functions
+def trainFromPreset(preset: list[list[str]]):
+    for convo in preset:
+        listTrainer.train(convo)
+
 # // ---- Main
 # // Train Chatbot
-# conversations.training.train(listTrainer) # detailed
 corpusTrainer.train("chatterbot.corpus.english")
+trainFromPreset(conversationPresets.online1)
+trainFromPreset(conversationPresets.online2)
 
 # // When the bot starts
 @client.event
