@@ -51,7 +51,7 @@ async def on_message(message: discord.Message):
     # Ignore messages sent by bots
     if message.author.bot:
         return
-    
+
     # ignore self
     if message.author == client.user:
         return
