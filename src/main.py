@@ -40,7 +40,8 @@ messageHistory = {}
 # // ---- Main
 # // Train Chatbot
 conversations.training.train(listTrainer) # detailed
-corpusTrainer.train("chatterbot.corpus.english")
+corpusTrainer.train("chatterbot.corpus.conversations")
+corpusTrainer.train("chatterbot.corpus.greetings")
 
 # // When the bot starts
 @client.event
@@ -65,6 +66,17 @@ async def on_message(message: discord.Message):
     if discordHelpers.cooldown.cooldown(message.author, config.chatCooldown, "chat"):
         return await message.add_reaction("🕰")
     
+    # Send loading message
+    message = await message.channel.send(
+        embed = discord.Embed(
+            description = f"> **Please wait..**",
+            color = discord.Colour.from_rgb(255, 125, 25)
+        ),
+        
+        reference = message,
+        mention_author = True
+    )
+    
     # Save message
     conversationFromUser = messageHistory.get(message.author.id, [])
     conversationFromUser.append(message.content)
@@ -81,14 +93,11 @@ async def on_message(message: discord.Message):
     helpers.prettyprint.info(f"🧑 | Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
     helpers.prettyprint.success(f"🤖| Reply: {response}")
 
-    return await message.channel.send(
+    return await message.edit(
         embed = discord.Embed(
             description = f"> :robot: | **{response}**",
             color = discord.Colour.from_rgb(125, 255, 125)
-        ),
-        
-        reference = message,
-        mention_author = True
+        )
     )
     
 # // Start the bot
