@@ -12,8 +12,12 @@ def handle(file_name: str):
         data: dict = json.loads(content)
         
         for _, conversation in data.items():
+            convo = []
+
             for talk in conversation.get("content"):
-                messages.append(talk["agent"] + ": " + talk["message"])
+                convo.append(talk["message"])
+                
+            messages.append(convo)
                                 
     with open(file_name.replace(".json", "_new.json"), "w") as f:
         f.write(json.dumps(messages, indent = 6))
