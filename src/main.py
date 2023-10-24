@@ -40,6 +40,9 @@ if not os.path.exists("saved.json"): # chatbot hasn't been trained before, so we
     # notify
     helpers.prettyprint.warn("This chatbot hasn't been trained. As a result, the chatbot will be trained. This may take a while.")
     
+    # destroy previously saved data
+    os.remove("db.sqlite3")
+    
     # train
     corpusTrainer.train("chatterbot.corpus.english")
 
