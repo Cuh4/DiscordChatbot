@@ -5,7 +5,6 @@
 # // ---- Imports
 import datetime
 import colorama as tcolor
-import config as config
 
 tcolor.init()
 
