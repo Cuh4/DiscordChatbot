@@ -8,7 +8,7 @@
 /src/conversations/__pycache__
 
 /src/config.py
-/src/saved.json
+/src/trained.json
 
 /src/db.sqlite3
 /src/db.sqlite3-shm

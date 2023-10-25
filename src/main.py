@@ -6,11 +6,10 @@
 import chatterbot
 from chatterbot import trainers
 import discord
-import os
 import json
-import sqlite3
 
 import config
+import training
 from helpers import discord as discordHelpers
 from helpers import general as helpers
 import conversationPresets
@@ -31,33 +30,16 @@ intents.message_content = True
 client = discord.Client(intents = intents)
 
 # // ---- Functions
-def trainFromPreset(preset: list[list[str]]):
-    for convo in preset:
-        listTrainer.train(helpers.filter.filter(convo))
+def trainFromPreset(name: str, preset: list[list[str]]):
+    for index, convo in enumerate(preset):
+        training.train(f"{name}.{index}", listTrainer, helpers.filter.filter(convo))
 
 # // ---- Main
 # // Train Chatbot
-if not os.path.exists("saved.json"): # chatbot hasn't been trained before, so we train it here
-    # notify
-    helpers.prettyprint.warn("This chatbot hasn't been trained. As a result, the chatbot will be trained. This may take a while.")
-    
-    # destroy previously saved data since training didn't complete correctly as implied by the lack of saved.json
-    connection = sqlite3.connect("db.sqlite3")
-    connection.cursor().execute("DELETE FROM statement").execute("DELETE FROM tag_association")
-    connection.close()
-    
-    # train
-    corpusTrainer.train("chatterbot.corpus.english")
+training.train("corpus.english", corpusTrainer, "chatterbot.corpus.english")
 
-    trainFromPreset(conversationPresets.online1.data)
-    trainFromPreset(conversationPresets.online2.data)
-    
-    # save
-    with open("saved.json", "w") as f:
-        f.write(json.dumps(
-            obj = {"saved" : True},
-            indent = 6
-        ))
+trainFromPreset("online1", conversationPresets.online1.data)
+trainFromPreset("online2", conversationPresets.online2.data)
 
 # // When the bot starts
 @client.event
