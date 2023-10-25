@@ -70,8 +70,10 @@ async def on_message(message: discord.Message):
         return await message.add_reaction("🕰")
     
     # remove mentions from message content
+    content = message.content
+
     for user in message.mentions:
-        message.content = message.content.replace(f"<@{user.id}>")
+        content = content.replace(f"<@{user.id}>", "")
     
     # Send loading message
     sentMessage = await message.channel.send(
@@ -84,12 +86,12 @@ async def on_message(message: discord.Message):
         mention_author = True
     )
 
-    helpers.prettyprint.info(f"🧑| Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
+    helpers.prettyprint.info(f"🧑| Received a message from {discordHelpers.utils.formattedName(message.author)}: {content}")
 
     # Get chatbot response
     helpers.prettyprint.info(f"💻| Processing.")
 
-    response = chatbot.get_response(message.content) # this yields the code. i need to make this async or run on a separate thread in the future
+    response = chatbot.get_response(content) # this yields the code. i need to make this async or run on a separate thread in the future
 
     # Reply with the response
     helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
