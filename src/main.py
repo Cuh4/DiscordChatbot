@@ -20,8 +20,8 @@ chatbot = chatterbot.ChatBot("Bob")
 
 # // Chatbot Training
 # Trainers
-listTrainer = trainers.ListTrainer(chatbot, show_training_progress = True)
-corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot, show_training_progress = True)
+listTrainer = trainers.ListTrainer(chatbot, show_training_progress = False)
+corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot, show_training_progress = False)
 
 # // Discord Bot
 intents = discord.Intents.default()
