@@ -39,7 +39,7 @@ def train(name: str, trainer: trainers.Trainer, *args, trainRegardless: bool = F
     
     # check if chatbot has already been trained
     if content.get(name, None) == True and not trainRegardless:
-        return
+        return helpers.prettyprint.warn(f"The chatbot has already trained {name}.")
     
     # train the chatbot
     helpers.prettyprint.info(f"🔽| Training {name}.")
