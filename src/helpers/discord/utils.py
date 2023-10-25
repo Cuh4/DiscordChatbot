@@ -27,7 +27,7 @@ def fullyFilter(msg: str):
     return msg.replace("`", "\`").replace("*", "\*").replace("~", "\~").replace("_", "\_").replace("")
 
 def formattedName(member: discord.User):
-    return member.name if member.discriminator == 0 else f"{member.name}#{member.discriminator}" # supports discord's new username system
+    return member.name if member.discriminator == "0" else f"{member.name}#{member.discriminator}" # supports discord's new username system
 
 def memberMention(member: discord.User):
     return f"<@{member.id}>"
