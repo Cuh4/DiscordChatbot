@@ -85,7 +85,7 @@ async def on_message(message: discord.Message):
     # Get chatbot response
     helpers.prettyprint.info(f"💻| Processing.")
 
-    response = chatbot.get_response(message.content)
+    response = chatbot.get_response(message.content) # this yields the code. i need to make this async or run on a separate thread in the future
 
     # Reply with the response
     helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
