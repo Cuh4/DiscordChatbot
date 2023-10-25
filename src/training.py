@@ -7,7 +7,7 @@ import os
 import json
 from chatterbot import trainers
 
-from .helpers import general as helpers
+from helpers import general as helpers
 
 # // ---- Variables
 fileName = "trained.json"
