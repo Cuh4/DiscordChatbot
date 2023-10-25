@@ -32,9 +32,17 @@ def __write(content: dict):
             indent = 6
         ))
 
-def train(name: str, trainer: trainers.Trainer, *args, **kwargs):
+def train(name: str, trainer: trainers.Trainer, *args, trainRegardless: bool = False, **kwargs):
+    # get data
+    content = __read()
+    
+    # check if chatbot has already been trained
+    if content.get(name, None) == True and not trainRegardless:
+        return
+    
+    # train the chatbot
     trainer.train(*args, **kwargs) # train the chatbot
     
-    content = __read() # for the future, save somewhere that we trained the chatbot
+    # for the future, save that we trained the chatbot
     content[name] = True
     __write(content)
