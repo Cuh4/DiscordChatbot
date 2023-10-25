@@ -97,10 +97,11 @@ async def on_message(message: discord.Message):
 
     helpers.prettyprint.info(f"🧑| Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
 
-    # Retrieve chatbot response
+    # Get chatbot response
     helpers.prettyprint.info(f"💻| Processing.")
+
     response = chatbot.get_response(message.content)
-    
+
     # Reply with the response
     helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
 
