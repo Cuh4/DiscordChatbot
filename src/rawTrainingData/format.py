@@ -27,3 +27,5 @@ def handle(file_name: str):
 # // ---- Main
 handle("test_freq.json")
 handle("train.json")
+handle("test_rare.json")
+handle("valid_rare.json")
