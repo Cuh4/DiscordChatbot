@@ -5,8 +5,9 @@
 # // ---- Imports
 import os
 import json
-import chatterbot
 from chatterbot import trainers
+
+from .helpers import general as helpers
 
 # // ---- Variables
 fileName = "trained.json"
@@ -38,10 +39,12 @@ def train(name: str, trainer: trainers.Trainer, *args, trainRegardless: bool = F
     
     # check if chatbot has already been trained
     if content.get(name, None) == True and not trainRegardless:
-        return
+        return helpers.prettyprint.warn(f"The chatbot has already trained {name}.")
     
     # train the chatbot
+    helpers.prettyprint.info(f"🔽| Training {name}.")
     trainer.train(*args, **kwargs) # train the chatbot
+    helpers.prettyprint.success("✅| Trained.")
     
     # for the future, save that we trained the chatbot
     content[name] = True
