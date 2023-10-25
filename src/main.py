@@ -69,6 +69,10 @@ async def on_message(message: discord.Message):
     if discordHelpers.cooldown.cooldown(message.author, config.chatCooldown, "chat"):
         return await message.add_reaction("🕰")
     
+    # remove mentions from message content
+    for user in message.mentions:
+        message.content = message.content.replace(f"<@{user.id}>")
+    
     # Send loading message
     sentMessage = await message.channel.send(
         embed = discord.Embed(
