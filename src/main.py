@@ -102,7 +102,7 @@ async def on_message(message: discord.Message):
     response = chatbot.get_response(message.content)
     
     # Reply with the response
-    helpers.prettyprint.success(f"🤖| Reply: {response}")
+    helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
 
     await sentMessage.edit(
         embed = discord.Embed(
