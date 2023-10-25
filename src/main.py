@@ -38,8 +38,10 @@ def trainFromPreset(name: str, preset: list[list[str]]):
 # // Train Chatbot
 training.train("corpus.english", corpusTrainer, "chatterbot.corpus.english")
 
+# source: https://github.com/alexa/Topical-Chat/tree/master/conversations
 trainFromPreset("online1", conversationPresets.online1.data)
 trainFromPreset("online2", conversationPresets.online2.data)
+
 
 # // When the bot starts
 @client.event
