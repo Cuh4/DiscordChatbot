@@ -95,11 +95,13 @@ async def on_message(message: discord.Message):
         mention_author = True
     )
 
+    helpers.prettyprint.info(f"🧑| Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
+
     # Retrieve chatbot response
+    helpers.prettyprint.info(f"💻| Processing.")
     response = chatbot.get_response(message.content)
     
     # Reply with the response
-    helpers.prettyprint.info(f"🧑 | Received a message from {discordHelpers.utils.formattedName(message.author)}: {message.content}")
     helpers.prettyprint.success(f"🤖| Reply: {response}")
 
     await sentMessage.edit(
