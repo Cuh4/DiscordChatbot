@@ -44,7 +44,7 @@ def train(name: str, trainer: trainers.Trainer, *args, trainRegardless: bool = F
     # train the chatbot
     helpers.prettyprint.info(f"🔽| Training {name}.")
     trainer.train(*args, **kwargs) # train the chatbot
-    helpers.prettyprint.success("✅| Trained.")
+    helpers.prettyprint.success(f"✅| Trained {name}.")
     
     # for the future, save that we trained the chatbot
     content[name] = True
