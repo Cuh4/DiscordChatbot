@@ -45,4 +45,6 @@ py main.py
 ### **Images**
 ![Conversations](imgs/conversation.png)
 
+![Status updates in terminal](imgs/terminal.png)
+
 ![Cooldowns](imgs/cooldowns.png)
