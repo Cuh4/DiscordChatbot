@@ -6,7 +6,6 @@
 import chatterbot
 from chatterbot import trainers
 import discord
-import json
 
 import config
 import training
@@ -17,6 +16,7 @@ import conversationPresets
 # // ---- Variables
 # // Chatbot
 chatbot = chatterbot.ChatBot("Bob")
+processingResponse = False # global response cooldown
 
 # // Chatbot Training
 # Trainers
@@ -53,6 +53,8 @@ async def on_ready():
 # // When a message is sent
 @client.event
 async def on_message(message: discord.Message):
+    global processingResponse
+    
     # Ignore messages sent by bots
     if message.author.bot:
         return
@@ -68,6 +70,10 @@ async def on_message(message: discord.Message):
     # Ignore message if user is on cooldown
     if discordHelpers.cooldown.cooldown(message.author, config.chatCooldown, "chat"):
         return await message.add_reaction("🕰")
+    
+    # ignore message if a response is already being processed (this is not so good if the bot is constantly being used in multiple guilds. oops!)
+    if processingResponse:
+        return await message.add_reaction("⚠")
     
     # remove mentions from message content
     content = message.content
@@ -91,7 +97,9 @@ async def on_message(message: discord.Message):
     # Get chatbot response
     helpers.prettyprint.info(f"💻| Processing.")
 
+    processingResponse = True
     response = chatbot.get_response(content) # this yields the code. i need to make this async or run on a separate thread in the future
+    processingResponse = False
 
     # Reply with the response
     helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
