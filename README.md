@@ -7,21 +7,6 @@ This bot heavily relies on ChatterBot, a Python package designed to make creatin
 
 The chatbot aspect is quite funky, but can easily be improved if given more training data.
 
-### **Requirements**
-- **Python**
-- **Discord** (Python Package)
-```
-pip install discord
-```
-- **ChatterBot** (Python Package)
-```
-pip install chatterbot
-```
-- **PyYAML 5.1** (Python Package)
-```
-pip install pyyaml==5.1
-```
-
 ### **How To Use**
 1) `git clone` this repo.
 ```

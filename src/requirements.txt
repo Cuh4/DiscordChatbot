@@ -1,0 +1,4 @@
+colorama
+discord
+pyyaml==5.1
+chatterbot
