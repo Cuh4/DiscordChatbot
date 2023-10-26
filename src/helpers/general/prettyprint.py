@@ -3,10 +3,12 @@
 # // ---------------------------------------------------------------------
 
 # // ---- Imports
+import os
 import datetime
 import colorama as tcolor
 
 tcolor.init()
+os.system("color") # for windows. enables ansi or whatever
 
 # // ---- Main
 # // Print
