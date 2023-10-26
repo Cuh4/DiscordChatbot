@@ -43,6 +43,8 @@ trainFromPreset("online1", conversationPresets.online1.data)
 trainFromPreset("online2", conversationPresets.online2.data)
 trainFromPreset("online3", conversationPresets.online3.data)
 trainFromPreset("online4", conversationPresets.online4.data)
+
+# source: https://www.kaggle.com/datasets/projjal1/human-conversation-training-data
 training.train("online5", listTrainer, helpers.filter.filter(conversationPresets.online5.data))
 
 # // When the bot starts
