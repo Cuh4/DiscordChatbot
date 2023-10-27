@@ -6,6 +6,8 @@
 import chatterbot
 from chatterbot import trainers
 import discord
+import threading
+import asyncio
 
 import config
 import training
@@ -16,6 +18,7 @@ import conversationPresets
 # // ---- Variables
 # // Chatbot
 chatbot = chatterbot.ChatBot("Bob")
+responses: dict[int, str] = {}
 
 # // Chatbot Training
 # Trainers
@@ -40,6 +43,22 @@ client = discord.Client(
 def trainFromPreset(name: str, preset: list[list[str]]):
     for index, convo in enumerate(preset):
         training.train(f"{name}.{index}", listTrainer, helpers.filter.filter(convo))
+        
+def findChatbotResponseFromID(id: int):
+    response = responses.get(id, None)
+    
+    if response is None:
+        return "", False
+    
+    return response, True
+
+def getChatbotResponse(id: int, content: str):
+    global responses
+    
+    response = chatbot.get_response(content)
+    responses[id] = response
+
+    return response
 
 # // ---- Main
 # // Train Chatbot
@@ -103,15 +122,47 @@ async def on_message(message: discord.Message):
     # Get chatbot response
     helpers.prettyprint.info(f"💻| Processing.")
 
-    response = chatbot.get_response(content) # this yields the code. i need to make this async or run on a separate thread in the future
+    threading.Thread(
+        target = getChatbotResponse, # to prevent yielding code
+        args = (content)
+    ).start()
 
-    # Reply with the response
-    helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
+    # Send chatbot response once ready
+    attempts = 10
+    currentAttempts = 1
+    
+    while True:
+        asyncio.sleep(config.responseTimeout / attempts)
+        currentAttempts += 1
+        
+        # timeout
+        if currentAttempts >= config.responseTimeout:
+            break
+        
+        # get chatbot response
+        response, exists = findChatbotResponseFromID(id)
+        
+        # not processed yet, so keep waiting
+        if not exists:
+            continue
+        
+        # response exists, so reply
+        helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
 
+        return await sentMessage.edit( # using return statement to prevent running timeout code below
+            embed = discord.Embed(
+                description = f"> :robot: :white_check_mark: | **{response}**",
+                color = discord.Colour.from_rgb(125, 255, 125)
+            )
+        )
+        
+    # Timed out, so reply
+    helpers.prettyprint.error(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)} timed out.")
+    
     await sentMessage.edit(
         embed = discord.Embed(
-            description = f"> :robot: | **{response}**",
-            color = discord.Colour.from_rgb(125, 255, 125)
+            description = f"> :robot: :x: | **Timed out.**",
+            color = discord.Colour.from_rgb(255, 125, 125)
         )
     )
     
