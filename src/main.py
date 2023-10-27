@@ -38,17 +38,26 @@ def trainFromPreset(name: str, preset: list[list[str]]):
 training.train("corpus.english", corpusTrainer, "chatterbot.corpus.english")
 
 # source: https://github.com/alexa/Topical-Chat/tree/master/conversations
-trainFromPreset("online1", conversationPresets.online1.data)
-trainFromPreset("online2", conversationPresets.online2.data)
-trainFromPreset("online3", conversationPresets.online3.data)
-trainFromPreset("online4", conversationPresets.online4.data)
+# trainFromPreset("online1", conversationPresets.online1.data)
+# trainFromPreset("online2", conversationPresets.online2.data)
+# trainFromPreset("online3", conversationPresets.online3.data)
+# trainFromPreset("online4", conversationPresets.online4.data)
 
-# source: https://www.kaggle.com/datasets/projjal1/human-conversation-training-data
-training.train("online5", listTrainer, helpers.filter.filter(conversationPresets.online5.data))
+# # source: https://www.kaggle.com/datasets/projjal1/human-conversation-training-data
+# training.train("online5", listTrainer, helpers.filter.filter(conversationPresets.online5.data))
 
 # // When the bot starts
 @client.event
 async def on_ready():
+    # set activity
+    await client.change_presence(
+        status = discord.Status.do_not_disturb,
+        activity = discord.Activity(
+            type = discord.ActivityType.watching,
+            name = config.activityText
+        )
+    )
+    
     # notify
     helpers.prettyprint.success(f"{discordHelpers.utils.formattedName(client.user)} has started.")
 
