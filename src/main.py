@@ -18,7 +18,6 @@ import conversationPresets
 # // ---- Variables
 # // Chatbot
 chatbot = chatterbot.ChatBot("Bob")
-responses: dict[int, str] = {}
 
 # // Chatbot Training
 # Trainers
@@ -44,21 +43,40 @@ def trainFromPreset(name: str, preset: list[list[str]]):
     for index, convo in enumerate(preset):
         training.train(f"{name}.{index}", listTrainer, helpers.filter.filter(convo))
         
-def findChatbotResponseFromID(id: int):
-    response = responses.get(id, None)
+async def getChatbotResponse(content: str, callback):
+    # getting the chatbot response
+    response, completed = "", False
     
-    if response is None:
-        return "", False
+    def chatbotResponse():
+        global response
+        global completed
     
-    return response, True
-
-def getChatbotResponse(id: int, content: str):
-    global responses
+        response = chatbot.get_response(content)
+        response, completed = response, True
+        
+    # do this in a separate thread
+    threading.Thread(
+        target = chatbotResponse
+    ).start()
     
-    response = chatbot.get_response(content)
-    responses[id] = response
-
-    return response
+    # delay until response is retrieved/time out
+    maxChecks = 10
+    checks = 1
+    
+    while True:
+        await asyncio.sleep(config.responseTimeout / maxChecks)
+        checks += 1
+        
+        # timeout
+        if checks > maxChecks:
+            break
+        
+        # not completed yet, so keep waiting
+        if not completed:
+            continue
+    
+    # response was either retrieved, or just timed out
+    await callback(response, completed)
 
 # // ---- Main
 # // Train Chatbot
@@ -122,49 +140,30 @@ async def on_message(message: discord.Message):
     # Get chatbot response
     helpers.prettyprint.info(f"💻| Processing.")
 
-    threading.Thread(
-        target = getChatbotResponse, # to prevent yielding code
-        args = (message.id, content)
-    ).start()
-
     # Send chatbot response once ready
-    maxChecks = 10
-    checks = 1
+    async def handler(response: str, successful: bool):
+        # successful
+        if successful:
+            helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
+
+            return await sentMessage.edit( # using return statement to prevent running timeout code below
+                embed = discord.Embed(
+                    description = f"> :robot: :white_check_mark: | **{response}**",
+                    color = discord.Colour.from_rgb(125, 255, 125)
+                )
+            )
+            
+        # unsuccessful (timed out)
+        helpers.prettyprint.error(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)} timed out.")
     
-    while True:
-        await asyncio.sleep(config.responseTimeout / maxChecks)
-        checks += 1
-        
-        # timeout
-        if checks > maxChecks:
-            break
-        
-        # get chatbot response\
-        response, exists = findChatbotResponseFromID(message.id)
-
-        # not processed yet, so keep waiting
-        if not exists:
-            continue
-        
-        # response exists, so reply
-        helpers.prettyprint.success(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)}: {response}")
-
-        return await sentMessage.edit( # using return statement to prevent running timeout code below
+        return await sentMessage.edit(
             embed = discord.Embed(
-                description = f"> :robot: :white_check_mark: | **{response}**",
-                color = discord.Colour.from_rgb(125, 255, 125)
+                description = f"> :robot: :x: | **I took too long to respond. Sorry!**",
+                color = discord.Colour.from_rgb(255, 125, 125)
             )
         )
         
-    # Timed out, so reply
-    helpers.prettyprint.error(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)} timed out.")
-    
-    await sentMessage.edit(
-        embed = discord.Embed(
-            description = f"> :robot: :x: | **I took too long to respond. Sorry!**",
-            color = discord.Colour.from_rgb(255, 125, 125)
-        )
-    )
+    getChatbotResponse(message.content, handler)
     
 # // Start the bot
 client.run(config.botToken, log_handler = None)
