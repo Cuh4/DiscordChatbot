@@ -17,7 +17,11 @@ import conversationPresets
 
 # // ---- Variables
 # // Chatbot
-chatbot = chatterbot.ChatBot("Bob")
+chatbot = chatterbot.ChatBot(
+    name = "Bob",
+    read_only = True
+)
+
 response, completed = "", False
 
 # // Chatbot Training
