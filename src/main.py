@@ -124,7 +124,7 @@ async def on_message(message: discord.Message):
 
     threading.Thread(
         target = getChatbotResponse, # to prevent yielding code
-        args = (content)
+        args = (message.id, content)
     ).start()
 
     # Send chatbot response once ready
@@ -132,7 +132,7 @@ async def on_message(message: discord.Message):
     currentAttempts = 1
     
     while True:
-        asyncio.sleep(config.responseTimeout / attempts)
+        await asyncio.sleep(config.responseTimeout / attempts)
         currentAttempts += 1
         
         # timeout
