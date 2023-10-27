@@ -18,6 +18,7 @@ import conversationPresets
 # // ---- Variables
 # // Chatbot
 chatbot = chatterbot.ChatBot("Bob")
+response, completed = "", False
 
 # // Chatbot Training
 # Trainers
@@ -45,14 +46,15 @@ def trainFromPreset(name: str, preset: list[list[str]]):
         
 async def getChatbotResponse(content: str, callback):
     # getting the chatbot response
-    response, completed = "", False
-    
     def chatbotResponse():
         global response
         global completed
+        
+        # default
+        response, completed = "", False
     
-        response = chatbot.get_response(content)
-        response, completed = response, True
+        # get response
+        response, completed = chatbot.get_response(content), True
         
     # do this in a separate thread
     threading.Thread(
@@ -66,14 +68,14 @@ async def getChatbotResponse(content: str, callback):
     while True:
         await asyncio.sleep(config.responseTimeout / maxChecks)
         checks += 1
-        
+
         # timeout
         if checks > maxChecks:
             break
         
         # not completed yet, so keep waiting
-        if not completed:
-            continue
+        if completed:
+            break
     
     # response was either retrieved, or just timed out
     await callback(response, completed)
@@ -163,7 +165,7 @@ async def on_message(message: discord.Message):
             )
         )
         
-    getChatbotResponse(message.content, handler)
+    await getChatbotResponse(message.content, handler)
     
 # // Start the bot
 client.run(config.botToken, log_handler = None)
