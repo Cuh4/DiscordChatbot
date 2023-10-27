@@ -26,7 +26,15 @@ corpusTrainer = trainers.ChatterBotCorpusTrainer(chatbot, show_training_progress
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = discord.Client(intents = intents)
+client = discord.Client(
+    intents = intents,
+    
+    status = discord.Status.do_not_disturb,
+    activity = discord.Activity(
+        type = discord.ActivityType.watching,
+        name = config.activityText
+    )
+)
 
 # // ---- Functions
 def trainFromPreset(name: str, preset: list[list[str]]):
@@ -48,16 +56,7 @@ training.train("online5", listTrainer, helpers.filter.filter(conversationPresets
 
 # // When the bot starts
 @client.event
-async def on_ready():
-    # set activity
-    await client.change_presence(
-        status = discord.Status.do_not_disturb,
-        activity = discord.Activity(
-            type = discord.ActivityType.watching,
-            name = config.activityText
-        )
-    )
-    
+async def on_ready():    
     # notify
     helpers.prettyprint.success(f"{discordHelpers.utils.formattedName(client.user)} has started.")
 
