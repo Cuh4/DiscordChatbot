@@ -141,9 +141,7 @@ async def on_message(message: discord.Message):
         
         # get chatbot response\
         response, exists = findChatbotResponseFromID(message.id)
-        
-        print(f"waiting {config.responseTimeout / maxChecks} | {checks}/{maxChecks} | {str(responses)} | {response} | {exists}")
-        
+
         # not processed yet, so keep waiting
         if not exists:
             continue
@@ -163,7 +161,7 @@ async def on_message(message: discord.Message):
     
     await sentMessage.edit(
         embed = discord.Embed(
-            description = f"> :robot: :x: | **Timed out.**",
+            description = f"> :robot: :x: | **I took too long to respond. Sorry!**",
             color = discord.Colour.from_rgb(255, 125, 125)
         )
     )
