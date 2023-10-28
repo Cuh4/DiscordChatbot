@@ -158,16 +158,16 @@ async def on_message(message: discord.Message):
                     color = discord.Colour.from_rgb(125, 255, 125)
                 )
             )
-            
-        # unsuccessful (timed out)
-        helpers.prettyprint.error(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)} timed out.")
-    
-        return await sentMessage.edit(
-            embed = discord.Embed(
-                description = f"> :robot: :x: | **I took too long to respond. Sorry!**",
-                color = discord.Colour.from_rgb(255, 125, 125)
+        else:
+            # unsuccessful (timed out)
+            helpers.prettyprint.error(f"🤖| Reply to {discordHelpers.utils.formattedName(message.author)} timed out.")
+        
+            return await sentMessage.edit(
+                embed = discord.Embed(
+                    description = f"> :robot: :x: | **I took too long to respond. Sorry!**",
+                    color = discord.Colour.from_rgb(255, 125, 125)
+                )
             )
-        )
         
     await getChatbotResponse(message.content, handler)
     
